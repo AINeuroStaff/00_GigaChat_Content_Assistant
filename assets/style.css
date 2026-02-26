@@ -1,0 +1,126 @@
+/* ==========================================================================
+   LIQUID GLASS (GLASSMORPHISM) THEME FOR STREAMLIT
+   ========================================================================== */
+
+/* 1. ГЛАВНЫЙ ФОН ПРИЛОЖЕНИЯ */
+/* Задаем мягкий градиент, который будет просвечивать через "стеклянные" элементы */
+[data-testid="stAppViewContainer"] {
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    background-attachment: fixed;
+}
+
+/* Делаем верхнюю панель Streamlit прозрачной */
+[data-testid="stHeader"] {
+    background-color: transparent;
+}
+
+/* Скрываем дефолтное меню гамбургера и футер Streamlit для чистоты UI */
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+
+/* ==========================================================================
+   2. БОКОВАЯ ПАНЕЛЬ (САЙДБАР)
+   ========================================================================== */
+[data-testid="stSidebar"] {
+    background: rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================================
+   3. КАРТОЧКИ И ФОРМЫ (GLASS CARDS)
+   ========================================================================== */
+/* Применяем эффект стекла ко всем формам (st.form) */
+[data-testid="stForm"] {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+/* Стилизация контейнеров (для блоков результатов) */
+[data-testid="stVerticalBlockBorderWrapper"] {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ==========================================================================
+   4. ЭЛЕМЕНТЫ ВВОДА (INPUTS, SELECTS, TEXTAREAS)
+   ========================================================================== */
+/* Делаем поля ввода полупрозрачными с мягкими границами */
+[data-baseweb="input"], [data-baseweb="textarea"], [data-baseweb="select"] {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.3s ease;
+}
+
+[data-baseweb="input"]:focus-within, [data-baseweb="textarea"]:focus-within {
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid #6C63FF !important;
+    box-shadow: 0 0 10px rgba(108, 99, 255, 0.2) !important;
+}
+
+/* ==========================================================================
+   5. КНОПКИ (BUTTONS)
+   ========================================================================== */
+/* Универсальный стиль для всех кнопок (Primary и Secondary) */
+[data-testid="baseButton-secondary"], [data-testid="baseButton-primary"], [data-testid="baseButton-formSubmit"] {
+    background: linear-gradient(135deg, #6C63FF 0%, #483d8b 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px 0 rgba(108, 99, 255, 0.3) !important;
+    transition: all 0.3s ease !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1rem !important;
+}
+
+/* Эффект при наведении на кнопки */
+[data-testid="baseButton-secondary"]:hover, [data-testid="baseButton-primary"]:hover, [data-testid="baseButton-formSubmit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(108, 99, 255, 0.5) !important;
+    border-color: transparent !important;
+    color: white !important;
+}
+
+/* ==========================================================================
+   6. РАСКРЫВАЮЩИЕСЯ СПИСКИ (EXPANDERS)
+   ========================================================================== */
+/* Используются в контент-плане по неделям */
+[data-testid="stExpander"] {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+[data-testid="stExpander"] details summary {
+    background: rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================================
+   7. СООБЩЕНИЯ ЧАТА (CHAT MESSAGES ДЛЯ ЛИД-МАГНИТОВ)
+   ========================================================================== */
+[data-testid="chatAvatarIcon-user"] {
+    background-color: #6C63FF !important;
+}
+
+[data-testid="stChatMessage"] {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,17 @@
+[theme]
+# Базовая палитра для стиля Liquid Glass
+primaryColor = "#6C63FF"          # Основной акцентный цвет (фиолетово-синий)
+backgroundColor = "#f5f7fa"       # Светлый фон приложения
+secondaryBackgroundColor = "#ffffff" # Цвет боковой панели и карточек
+textColor = "#2d3436"             # Цвет основного текста
+font = "sans serif"               # Базовый шрифт
+
+[server]
+# Удобно для разработки: автообновление при сохранении файлов
+runOnSave = true
+# Увеличиваем лимит загрузки (полезно, если в будущем добавите работу с документами)
+maxUploadSize = 50
+
+[browser]
+# Отключаем отправку анонимной телеметрии на серверы Streamlit
+gatherUsageStats = false

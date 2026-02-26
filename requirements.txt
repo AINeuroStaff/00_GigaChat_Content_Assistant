@@ -1,0 +1,7 @@
+streamlit>=1.36.0
+gigachat>=0.1.43
+pydantic>=2.12.5
+pandas>=2.3.3
+reportlab>=4.0.0
+streamlit-authenticator>=0.4.0
+python-dotenv>=1.0.0
