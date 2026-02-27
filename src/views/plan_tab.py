@@ -66,7 +66,7 @@ def render_plan_tab():
                 value=st.session_state.get("current_niche", "Консалтинг и разработка ПО")
             )
             
-            period = st.selectbox("Период", ["1 месяц", "2 недели", "1 неделя"])
+            period = st.selectbox("Период", ["1 неделя", "2 недели", "1 месяц"])
             
             channels = st.multiselect(
                 "Каналы публикации",

@@ -121,7 +121,7 @@ if st.session_state.get("authentication_status"):
     
     # Оформляем сайдбар и добавляем кнопку выхода
     with st.sidebar:
-        st.title("✨ Content AI")
+        st.title("✨ AI Контент Машина   ")
         st.caption("Liquid Glass Edition")
         st.write(f"👤 Привет, **{st.session_state.get('name', 'Админ')}**!")
         
@@ -143,7 +143,29 @@ if st.session_state.get("authentication_status"):
             "Система": [settings_page]
         }
     )
-    
+    # --- ПОДВАЛ СТРАНИЦЫ ---
+    st.sidebar.markdown(
+        """
+        <div style="font-size: 18px; color: #666; margin-top: 8px;">
+            <div> Виртуальный специалист </div>
+            <div> "AI Content Maker" </div>
+            <div> Ver01 (🐛🔍 beta ) от 27.02.26 </div>
+            <div>2026 · © Дубинин Владимир</div>
+            <div>ОГРНИП 325180000101289</div>
+            <div>г. Старый Оскол</div>
+            <div style="margin-top: 4px;">
+                Обратная связь:<br>
+                <a href="https://t.me/AI_Services_VSA" target="_blank">
+                    Команда разработки
+                </a>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+
     # Запускаем выбранную страницу
     pg.run()
 
