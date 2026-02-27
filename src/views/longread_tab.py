@@ -40,66 +40,149 @@ SEO Longreads Tab: Генерация SEO-статей
 """
 
 import streamlit as st
-
-# Импортируем бизнес-логику
+import json
 from src.services.content_gen import generate_seo_article_stream
 
-# ==========================================
-# --- 1. ГЛАВНЫЙ ИНТЕРФЕЙС ВКЛАДКИ ---
-# ==========================================
-
-def render_longread_tab() -> None:
-    """Отрисовывает интерфейс вкладки генерации SEO-статей и лонгридов."""
-    st.title("📝 Лонгриды и SEO-статьи")
-    st.markdown("Генерация объемных, структурированных статей для блогов (VC.ru, Дзен, сайт) с учетом ключевых слов.")
-
-    # Создаем двухколоночный макет: слева настройки (1 часть), справа результаты (2.5 части)
-    col_settings, col_results = st.columns([1, 2.5])
-
-    # ==========================================
-    # --- 2. ИНТЕРФЕЙС НАСТРОЕК ---
-    # ==========================================
+def create_html_export(markdown_text: str, title: str) -> str:
+    """
+    Оборачивает Markdown-текст в HTML-шаблон с подключенным скриптом marked.js.
+    Это позволяет получить красиво сверстанный оффлайн-документ без установки тяжелых Python-библиотек.
+    """
+    # Экранируем обратные кавычки для безопасной вставки в JS
+    safe_md = markdown_text.replace("`", "\\`").replace("$", "\\$")
     
+    html_template = f"""<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <style>
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }}
+        h1, h2, h3 {{ color: #2c3e50; margin-top: 1.5em; }}
+        code {{ background: #f4f4f4; padding: 2px 5px; border-radius: 4px; }}
+        pre {{ background: #f4f4f4; padding: 15px; border-radius: 8px; overflow-x: auto; }}
+        blockquote {{ border-left: 4px solid #6c63ff; margin-left: 0; padding-left: 15px; color: #555; }}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div id="content">Загрузка контента...</div>
+    <script>
+        const rawMarkdown = `{safe_md}`;
+        document.getElementById('content').innerHTML = marked.parse(rawMarkdown);
+    </script>
+</body>
+</html>"""
+    return html_template
+
+def render_longread_tab():
+    st.title("📝 Лонгриды и SEO-статьи")
+    st.markdown("Генерация объемных, структурированных статей для блога с учетом SEO-требований.")
+
+    # Инициализация состояния для хранения сгенерированной статьи
+    if "current_longread" not in st.session_state:
+        st.session_state.current_longread = None
+
+    col_settings, col_result = st.columns([1, 2.5])
+
+    # --- КОЛОНКА НАСТРОЕК ---
     with col_settings:
-        st.subheader("Параметры статьи")
-        with st.form("longread_settings"):
-            # Подтягиваем текущую нишу из сессии
+        st.subheader("Настройки SEO")
+        with st.form("seo_article_form"):
             niche = st.text_input("Ниша бизнеса", value=st.session_state.get("current_niche", ""))
             
-            topic = st.text_area("Тема статьи (Подробно):", height=100)
-            target_keywords = st.text_area("SEO ключевые слова (через запятую):", placeholder="купить слона, слоны москва, доставка слонов")
-            length = st.selectbox("Объем статьи", ["Средняя (~3000-5000 символов)", "Длинная лонгрид (~7000-10000 символов)"])
-            
-            generate_btn = st.form_submit_button("Написать статью ✍️", width='stretch')
+            # Интеллектуальный выбор темы
+            saved_topics = st.session_state.get("generated_topics", [])
+            if saved_topics:
+                topic = st.selectbox("Тема статьи:", ["-- Своя тема --"] + saved_topics)
+                if topic == "-- Своя тема --":
+                    topic = st.text_input("Введите свою тему:")
+            else:
+                topic = st.text_input("Тема статьи:")
 
-    # ==========================================
-    # --- 3. ГЕНЕРАЦИЯ И ВЫВОД РЕЗУЛЬТАТОВ ---
-    # ==========================================
-    
-    with col_results:
-        # Инструкция-заглушка
-        if not generate_btn:
-            st.info("👈 Задайте тему, впишите ключевые слова и нажмите «Написать статью».")
+            target_keywords = st.text_area(
+                "Ключевые слова (SEO)",
+                placeholder="Например: купить онлайн, тренды 2026, отзывы экспертов (оставьте пустым, чтобы AI подобрал сам)"
+            )
             
+            length = st.selectbox(
+                "Ориентировочный объем",
+                ["1500 слов (Стандартная статья)", "2500 слов (Подробный лонгрид)", "4000 слов (Ultimate Guide)"],
+                index=1
+            )
+
+            generate_btn = st.form_submit_button("Написать статью 🚀", width="stretch")
+
+    # --- КОЛОНКА РЕЗУЛЬТАТА ---
+    with col_result:
         if generate_btn:
             if not topic.strip():
                 st.error("Пожалуйста, укажите тему статьи.")
             else:
-                st.markdown("### 📄 Готовая статья")
+                st.session_state.current_longread = None # Сброс прошлого результата
                 
-                # Запускаем потоковую генерацию статьи
-                stream = generate_seo_article_stream(
-                    business_niche=niche,
-                    topic=topic,
-                    target_keywords=target_keywords,
-                    length=length
+                st.subheader(f"Генерация: {topic}")
+                with st.spinner("AI собирает информацию и пишет статью. Это может занять около минуты..."):
+                    # Запускаем потоковую генерацию
+                    stream = generate_seo_article_stream(
+                        business_niche=niche,
+                        topic=topic,
+                        target_keywords=target_keywords if target_keywords.strip() else "Определить автоматически на основе темы",
+                        length=length
+                    )
+                    
+                    # st.write_stream отображает текст по мере его появления
+                    full_article = st.write_stream(stream)
+                    st.session_state.current_longread = full_article
+                    
+                st.success("Статья успешно написана!")
+                st.rerun() # Обновляем UI, чтобы показать кнопки экспорта
+
+        # Если в сессии есть готовая статья, показываем её и кнопки действий
+        if st.session_state.current_longread:
+            st.markdown("### Готовая статья")
+            
+            # Используем st.code для удобного копирования (в правом верхнем углу блока есть кнопка Copy)
+            st.caption("Вы можете скопировать текст, нажав на иконку в правом верхнем углу блока ниже:")
+            st.code(st.session_state.current_longread, language="markdown")
+
+            st.markdown("---")
+            st.markdown("#### Экспорт")
+            
+            col_dl1, col_dl2 = st.columns(2)
+            
+            # Подготовка файлов
+            md_bytes = st.session_state.current_longread.encode('utf-8')
+            html_string = create_html_export(st.session_state.current_longread, topic)
+            html_bytes = html_string.encode('utf-8')
+            
+            safe_filename = "".join([c if c.isalnum() else "_" for c in topic])[:20]
+            
+            with col_dl1:
+                st.download_button(
+                    label="📄 Скачать как Markdown (.md)",
+                    data=md_bytes,
+                    file_name=f"article_{safe_filename}.md",
+                    mime="text/markdown",
+                    width="stretch"
                 )
                 
-                # st.write_stream отображает текст по мере его поступления
-                full_text = st.write_stream(stream)
-                
-                # Всплывающее уведомление об успешном завершении
-                st.toast("Статья успешно написана!", icon="✅")
+            with col_dl2:
+                st.download_button(
+                    label="🌐 Скачать как веб-страницу (.html)",
+                    data=html_bytes,
+                    file_name=f"article_{safe_filename}.html",
+                    mime="text/html",
+                    width="stretch"
+                )
 
-# Точка входа для рендера страницы Streamlit
+# Запуск рендера страницы
 render_longread_tab()
