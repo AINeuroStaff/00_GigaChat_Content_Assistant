@@ -70,7 +70,7 @@ def render_longread_tab() -> None:
             target_keywords = st.text_area("SEO ключевые слова (через запятую):", placeholder="купить слона, слоны москва, доставка слонов")
             length = st.selectbox("Объем статьи", ["Средняя (~3000-5000 символов)", "Длинная лонгрид (~7000-10000 символов)"])
             
-            generate_btn = st.form_submit_button("Написать статью ✍️", use_container_width=True)
+            generate_btn = st.form_submit_button("Написать статью ✍️", width='stretch')
 
     # ==========================================
     # --- 3. ГЕНЕРАЦИЯ И ВЫВОД РЕЗУЛЬТАТОВ ---

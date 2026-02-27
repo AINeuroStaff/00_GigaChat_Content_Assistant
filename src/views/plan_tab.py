@@ -76,7 +76,7 @@ def render_plan_tab() -> None:
             )
             extra_context = st.text_area("Доп. контекст (Акции, фокус месяца):", placeholder="Например: в этом месяце продвигаем новый курс...")
             
-            generate_btn = st.form_submit_button("Сгенерировать план 🚀", use_container_width=True)
+            generate_btn = st.form_submit_button("Сгенерировать план 🚀", width='stretch')
 
     # ==========================================
     # --- 3. ГЕНЕРАЦИЯ И ВЫВОД РЕЗУЛЬТАТОВ ---
@@ -128,7 +128,7 @@ def render_plan_tab() -> None:
             df.columns = ["Неделя", "День недели", "Тема поста", "Канал", "Формат"]
             
             # Выводим интерактивную таблицу на весь экран
-            st.dataframe(df, use_container_width=True, hide_index=True)
+            st.dataframe(df, width='stretch', hide_index=True)
 
             st.markdown("---")
             col_dl1, col_dl2 = st.columns([1, 1])
@@ -141,7 +141,7 @@ def render_plan_tab() -> None:
                     data=csv,
                     file_name="content_plan.csv",
                     mime="text/csv",
-                    use_container_width=True
+                    width='stretch'
                 )
 # Точка входа для рендера страницы Streamlit
 render_plan_tab()

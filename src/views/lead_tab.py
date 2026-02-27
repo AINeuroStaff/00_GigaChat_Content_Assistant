@@ -85,7 +85,7 @@ def render_lead_tab() -> None:
             audience = st.text_input("Для кого (Целевая аудитория):", placeholder="Например: новички в инвестициях")
             length = st.select_slider("Объем текста", options=["Кратко (1-2 стр)", "Оптимально (3-5 стр)", "Подробно (от 5 стр)"], value="Оптимально (3-5 стр)")
             
-            generate_btn = st.form_submit_button("Создать материал ✨", use_container_width=True)
+            generate_btn = st.form_submit_button("Создать материал ✨", width='stretch')
 
     # ==========================================
     # --- 3. ГЕНЕРАЦИЯ ТЕКСТА И СБОРКА PDF ---
@@ -140,7 +140,7 @@ def render_lead_tab() -> None:
                     file_name="lead_magnet.pdf",
                     mime="application/pdf",
                     type="primary",
-                    use_container_width=True,
+                    width='stretch',
                     key="lead_magnet_download_btn"  # Уникальный ключ для предотвращения ошибок Streamlit
                 )
 
